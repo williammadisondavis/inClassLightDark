@@ -74,140 +74,145 @@ class HomeScreen extends StatelessWidget {
     // Now Theme.of(context) correctly reads from the active MaterialApp theme
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Status Card Demo'),
-      ),
-      body: Center(
-        child: SingleChildScrollView( // Added scrollview to ensure extra credit features fit on all screens
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Part 1 : Avatar and Text
-              CircleAvatar(
-                radius: 45,
-                backgroundColor: isDark ? Colors.teal : Colors.blueGrey,
-                child: const Icon(Icons.person, size: 42, color: Colors.white),
-              ),
-
-              const SizedBox(height: 12),
-
-              const Text(
-                'Flutter Theme Lab',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Part 1: Status Badge Container
-              // Task 1 and 3: Replaced Container with AnimatedContainer, added 400ms duration
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 400), // Custom 400ms animation duration
-                width: 240,
-                height: 64,
-                margin: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  // Use a ternary operator to check theme brightness
-                  color: isDark ? Colors.red : Colors.green,
-                  borderRadius: BorderRadius.circular(16),
+    // Feature 4: Wrapped whole screen content in AnimatedTheme for smooth full-page color transitions
+    return AnimatedTheme(
+      duration: const Duration(milliseconds: 400),
+      data: Theme.of(context),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Status Card Demo'),
+        ),
+        body: Center(
+          child: SingleChildScrollView( // Added scrollview to ensure extra credit features fit on all screens
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Part 1 : Avatar and Text
+                CircleAvatar(
+                  radius: 45,
+                  backgroundColor: isDark ? Colors.teal : Colors.blueGrey,
+                  child: const Icon(Icons.person, size: 42, color: Colors.white),
                 ),
-                alignment: Alignment.center,
-                child: Row(
+
+                const SizedBox(height: 12),
+
+                const Text(
+                  'Flutter Theme Lab',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Part 1: Status Badge Container
+                // Task 1 and 3: Replaced Container with AnimatedContainer, added 400ms duration
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 400), // Custom 400ms animation duration
+                  width: 240,
+                  height: 64,
+                  margin: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    // Use a ternary operator to check theme brightness
+                    color: isDark ? Colors.red : Colors.green,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Task 4: Displays open circle in light mode & filled check circle in dark mode
+                      Icon(
+                        isDark ? Icons.check_circle : Icons.circle_outlined,
+                        size: 16,
+                        color: Colors.black87,
+                      ),
+                      const SizedBox(width: 8),
+                      // EXTRA CREDIT 1: AnimatedCrossFade for text transition on theme change
+                      AnimatedCrossFade(
+                        duration: const Duration(milliseconds: 300),
+                        crossFadeState: isDark 
+                            ? CrossFadeState.showSecond 
+                            : CrossFadeState.showFirst,
+                        firstChild: const Text(
+                          'Status: Online',
+                          style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
+                        ),
+                        secondChild: const Text(
+                          'Status: Dark Mode',
+                          style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                const Text('Choose the Theme:', style: TextStyle(fontSize: 16)),
+                
+                const SizedBox(height: 10),
+
+                // PART 1 TASK and TASK 2: Controls
+                // CHANGED: Replaced the Row of ElevatedButtons with a switch control
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Task 4: Displays open circle in light mode & filled check circle in dark mode
-                    Icon(
-                      isDark ? Icons.check_circle : Icons.circle_outlined,
-                      size: 16,
-                      color: Colors.black87,
-                    ),
+                    const Text('Dark Mode'),
                     const SizedBox(width: 8),
-                    // EXTRA CREDIT 1: AnimatedCrossFade for text transition on theme change
-                    AnimatedCrossFade(
-                      duration: const Duration(milliseconds: 300),
-                      crossFadeState: isDark 
-                          ? CrossFadeState.showSecond 
-                          : CrossFadeState.showFirst,
-                      firstChild: const Text(
-                        'Status: Online',
-                        style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
-                      ),
-                      secondChild: const Text(
-                        'Status: Dark Mode',
-                        style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
-                      ),
+                    Switch(
+                      value: isDarkTheme, // Controls which side the switch displays
+                      onChanged: (bool value) {
+                        onThemeChanged(value); // Triggers parent setState via callback
+                      },
                     ),
                   ],
                 ),
-              ),
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 20),
+                const Divider(indent: 40, endIndent: 40),
+                const SizedBox(height: 10),
 
-              const Text('Choose the Theme:', style: TextStyle(fontSize: 16)),
-              
-              const SizedBox(height: 10),
-
-              // PART 1 TASK and TASK 2: Controls
-              // CHANGED: Replaced the Row of ElevatedButtons with a switch control
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Dark Mode'),
-                  const SizedBox(width: 8),
-                  Switch(
-                    value: isDarkTheme, // Controls which side the switch displays
-                    onChanged: (bool value) {
-                      onThemeChanged(value); // Triggers parent setState via callback
-                    },
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-              const Divider(indent: 40, endIndent: 40),
-              const SizedBox(height: 10),
-
-              // EXTRA CREDIT 2: Added filter chip
-              Wrap(
-                spacing: 8.0,
-                children: [
-                  FilterChip(
-                    label: const Text('Light Mode'),
-                    selected: !isDarkTheme,
-                    onSelected: (bool selected) {
-                      if (selected) onThemeChanged(false);
-                    },
-                  ),
-                  FilterChip(
-                    label: const Text('Dark Mode'),
-                    selected: isDarkTheme,
-                    onSelected: (bool selected) {
-                      if (selected) onThemeChanged(true);
-                    },
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 15),
-
-              // EXTRA CREDIT 3: System theme reset button and app label at bottom
-              OutlinedButton.icon(
-                onPressed: onResetTheme,
-                icon: const Icon(Icons.settings_backup_restore, size: 18),
-                label: const Text('Reset to System Theme'),
-              ),
-
-              const SizedBox(height: 8),
-
-              Text(
-                'Extra Credit Demo',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
+                // EXTRA CREDIT 2: Added filter chip
+                Wrap(
+                  spacing: 8.0,
+                  children: [
+                    FilterChip(
+                      label: const Text('Light Mode'),
+                      selected: !isDarkTheme,
+                      onSelected: (bool selected) {
+                        if (selected) onThemeChanged(false);
+                      },
+                    ),
+                    FilterChip(
+                      label: const Text('Dark Mode'),
+                      selected: isDarkTheme,
+                      onSelected: (bool selected) {
+                        if (selected) onThemeChanged(true);
+                      },
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 20),
-            ],
+
+                const SizedBox(height: 15),
+
+                // EXTRA CREDIT 3: System theme reset button and app label at bottom
+                OutlinedButton.icon(
+                  onPressed: onResetTheme,
+                  icon: const Icon(Icons.settings_backup_restore, size: 18),
+                  label: const Text('Reset to System Theme'),
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  'Extra Credit Demo',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
